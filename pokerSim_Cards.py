@@ -41,9 +41,9 @@ def convert_rank(rank):
     }[rank]
 def convert_suit(suit):
     return{
-        0:"HEARTS",
+        0:"CLUBS",
         1:"DIAMONDS",
-        2:"CLUBS",
+        2:"HEARTS",
         3:"SPADES",
     }[suit]
 
@@ -61,11 +61,16 @@ class pokerSim_Card:
     def __init__(self,index):
         self.rank = index%13
         self.suit = index//13
-
     def __str__(self):
         rank = convert_rank(self.rank)
         suit = convert_suit(self.suit)
         return rank+" of "+suit
+    def toIndex(self):
+        if(self.rank == 0):
+            r = 12
+        else:
+            r = rank-1
+        return r+self.suit*13
 
 
 # In[4]:
