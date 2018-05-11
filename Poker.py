@@ -471,13 +471,14 @@ def Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                         # Fold
                         return 2, 0
             else: # are we here6
-                if prob_win > 0.8:
+                if prob_win > 0.6:
                     return 1, bet
                 elif prob_win > 0.6:
                     if random.random() < alpha * 0.5:
                         return 1, bet
                     else:
                         return 2, 0
+                 
                 else: # are we here7
                     if random.random() < alpha * 0.25:
                         return 1, bet
@@ -490,16 +491,16 @@ def Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
 
 
 def Postflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
-    print("Bonnie is cute")
+    #print("Bonnie is cute")
     if turn == 0:
-        print("but she don't reply?")
+        #print("but she don't reply?")
         if prob_win > random.gauss(0.7, 0.1):
             # you bet first on the flop with some prob if good cards
             if random.random() < prob_win:
                 BET = random.gauss(0.4, 0.15) * pot
                 return 4, math.floor(BET)
             else:
-                print("here every single time??")
+                #print("here every single time??")
                 return 3, 0
         elif prob_win < 0.2:
             # if you have bad cards, bluff with some prob
@@ -507,7 +508,7 @@ def Postflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                 BET = random.gauss(0.5, 0.2) * pot
                 return 4, math.floor(BET)
             else:
-                print("no way")
+                #print("no way")
                 return 3, 0
         # if not betting just check
         return 3, 0    
@@ -621,7 +622,7 @@ def Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                         # raise opponent if you have good cards
                     return 4, math.floor(random.gauss(2, 0.5) * bet)
                 elif prob_win < random.gauss(0.3, 0.15):
-                    print("Fold")
+                    #print("Fold")
                     # Fold if prob win is too low
                     return 2, 0
                 else:
@@ -683,7 +684,7 @@ def River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
             elif prob_win < 0.2:
             # if you have bad cards, bluff with some prob
                 if random.random() < alpha / 3:
-                    BET = random.gauss(0.5, 0.4) * pot
+                    BET = random.gauss(0.5, 0.1) * pot
                     return 4, math.floor(BET)
                 else:
                     return 3, 0
