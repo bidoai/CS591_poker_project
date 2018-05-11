@@ -405,12 +405,15 @@ def Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
             if prob_win > 1 - alpha**2:
                 BET = stacks[0]
                 return 4,BET
+            else:
+                return 1, 0
         numbers = [Number(card) for card in cards]
         if 12 in numbers:
             # starting hand has an ace, raise
             if random.random() < 0.8:
                 # raise 80% of starting cards that has ace
                 return 4, math.floor(random.gauss(2.5, 0.5) * BB)
+            
         if prob_win < random.gauss(0.2, 0.1):
             # really bad hand, need to bluf if want to win
             if random.random() < alpha:
@@ -422,10 +425,10 @@ def Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
               
         if random.random() < prob_win:
             BET = 2 * BB
-            return BET
+            return 4, BET
         else: # are we here2
             # limp in
-            return 5, BB/2
+            return 1, BB/2
             
     if turn == 1:
         # you go second preflop.
@@ -466,7 +469,7 @@ def Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                         return 1, bet
                     else: 
                         # Fold
-                        return 2
+                        return 2, 0
             else: # are we here6
                 if prob_win > 0.8:
                     return 1, bet
@@ -502,7 +505,7 @@ def Postflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
             # if you have bad cards, bluff with some prob
             if random.random() < alpha * 0.6:
                 BET = random.gauss(0.5, 0.2) * pot
-                return math.floor(BET)
+                return 4, math.floor(BET)
             else:
                 print("no way")
                 return 3, 0
@@ -524,7 +527,7 @@ def Postflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
             # if you have bad cards, bluff with some prob
                 if random.random() < alpha * 0.6:
                     BET = random.gauss(0.5, 0.2) * pot
-                    return math.floor(BET)
+                    return 4, math.floor(BET)
                 else:
                     return 3, 0
             else:
@@ -578,7 +581,7 @@ def Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
         # just check if not betting
         else:
             return 3, 0
-    if turn == 1:
+    else:
         # you play second
         if bet == 0:
             # your opponent checks the flop to you
@@ -602,19 +605,21 @@ def Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                 if random.random() < alpha:
                     BET = random.gauss(0.5, 0.2) * pot
                     return 4, math.floor(BET)
+                else:
+                    return 1, bet
             else:
                 return 3, 0
         else:
             # the opponent bets you
             # decide to call, raise, or fold
             ex_val = prob_win * pot
-            print("hello")
-            print("ex_val: " + str(ex_val))
-            print(prob_win)
+            #print("hello")
+            #print("ex_val: " + str(ex_val))
+            #print(prob_win)
             if ex_val > bet:
                 if prob_win > 0.7:
                         # raise opponent if you have good cards
-                    return math.floor(random.gauss(2, 0.5) * bet)
+                    return 4, math.floor(random.gauss(2, 0.5) * bet)
                 elif prob_win < random.gauss(0.3, 0.15):
                     print("Fold")
                     # Fold if prob win is too low
@@ -624,7 +629,7 @@ def Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
             else:
                 if random.random() < 0.45* alpha:
                     # call sometimes even when have bad hands
-                    return bet
+                    return 4, bet
                 else:
                     # Fold
                     return 2, 0
@@ -673,12 +678,17 @@ def River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                 if random.random() < prob_win:
                     BET = random.gauss(0.7, 0.15) * pot
                     return 4, math.floor(BET)
-            if prob_win < 0.2:
+                else:
+                    return 3, 0
+            elif prob_win < 0.2:
             # if you have bad cards, bluff with some prob
                 if random.random() < alpha / 3:
                     BET = random.gauss(0.5, 0.4) * pot
                     return 4, math.floor(BET)
-            return 0
+                else:
+                    return 3, 0
+            else:
+                return 3, 0
         else:
             # the opponent bets you
             # decide to call, raise, or fold
@@ -689,6 +699,10 @@ def River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                     return 4, stacks[1]
                 elif prob_win > random.gauss(0.5, 0.15):
                     # call with a decent hand
+                    return 1, bet
+                elif prob_win < random.gauss(0.2, 0.05):
+                    return 2, 0
+                else:
                     return 1, bet
             else:
                 if random.random() < 0.33 * alpha:                                                    
@@ -704,7 +718,7 @@ def River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
 
 def Move(hand, board, pot, BB, stacks, turn, bet, state, alpha):
     prob_win = ProbWin(hand, board)
-    print("Winning Prob:" + str(prob_win))
+    #print("Winning Prob:" + str(prob_win))
     if state == 0:
         # Preflop
         """Some notes of starting hands:
