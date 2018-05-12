@@ -559,7 +559,6 @@ def Postflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
 
 
 def Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
-    
     if turn == 0:
         if prob_win > random.gauss(0.7,0.1):
             # you bet first on the flop with some prob if good cards
@@ -634,7 +633,7 @@ def Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                 else:
                     # Fold
                     return 2, 0
-
+    return 3,0
 
 # In[105]:
 
@@ -669,7 +668,7 @@ def River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
         else:
             return 3, 0
                     
-    if turn == 1:
+    elif turn == 1:
         # you play second
         if bet == 0:
             # your opponent checks the flop to you
@@ -712,7 +711,7 @@ def River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win):
                     
                 else:
                     return 2, 0
-
+    return 3,0
 
 
 
@@ -730,17 +729,13 @@ def Move(hand, board, pot, BB, stacks, turn, bet, state, alpha):
                     Tier 5: A7(88) ~ A2(83), KQ (79), 
                     Tier 6: QJ(65), JT(53), T9, 98, 87, 76, 65
         """
-        return Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win)
-        
-                            
-                    
+        return Preflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win)        
     elif state == 1:
         # Postflop
         return Postflop(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win)
     elif state == 2:
         # Turn
         return Turn(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win)
-        
     else:
         # River
         return River(hand, board, pot, BB, stacks, turn, bet, alpha, prob_win)
